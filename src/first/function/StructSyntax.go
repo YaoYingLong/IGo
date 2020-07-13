@@ -1,6 +1,8 @@
 package function
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Point struct {
 	X int
@@ -8,7 +10,7 @@ type Point struct {
 }
 
 type Color struct {
-	R, G, B byte
+	R, G, B int
 }
 
 type Player struct {
@@ -23,12 +25,19 @@ type Command struct {
 	Comment string
 }
 
+func printMsg(msg *struct {
+	id   int
+	data string
+}) {
+	fmt.Println("msg", msg)
+}
+
 func StructBase() {
-	var ins Point
-	fmt.Println("ins before:", ins)
-	ins.X = 15
-	ins.Y = 16
-	fmt.Println("ins before, X, Y:", ins, ins.X, ins.Y)
+	var point Point
+	fmt.Println("ins before:", point)
+	point.X = 15
+	point.Y = 16
+	fmt.Println("point before, X, Y:", point, point.X, point.Y)
 
 	tank := new(Player)
 	(*tank).Name = "Canon"
@@ -47,4 +56,31 @@ func StructBase() {
 		Comment: "show version",
 	}
 	fmt.Println("cmd, Name, Var, Comment:", *cmd, cmd.Name, *cmd.Var, cmd.Comment)
+
+	cmd2 := Command{
+		"version",
+		&version,
+		"show version",
+	}
+	fmt.Println("cmd2, Name, Var, Comment:", cmd2, cmd2.Name, *cmd2.Var, cmd2.Comment)
+
+	ins := struct {
+		Name    string
+		Var     *int
+		Comment string
+	}{
+		"version",
+		&version,
+		"show version",
+	}
+	fmt.Println("ins, Name, Var, Comment:", ins, ins.Name, *ins.Var, ins.Comment)
+
+	msg := &struct {
+		id   int
+		data string
+	}{
+		1024,
+		"hello",
+	}
+	printMsg(msg)
 }

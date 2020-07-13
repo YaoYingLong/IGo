@@ -14,9 +14,9 @@ func main() {
 	// 容器
 	//container.BaseFunc()
 	// 函数定义
-	function.BaseFunc()
+	//function.BaseFunc()
 	// 接口
 	//function.InterBaseFunc()
 	// 结构体
-	//function.StructBase()
+	function.StructBase()
 }
