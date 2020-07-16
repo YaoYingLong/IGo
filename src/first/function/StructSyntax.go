@@ -32,6 +32,123 @@ func printMsg(msg *struct {
 	fmt.Println("msg", msg)
 }
 
+type innerS struct {
+	in1 int
+	in2 int
+}
+
+type outerS struct {
+	b   int
+	c   float32
+	in1 int
+	int
+	innerS
+}
+
+func nestedStruct() {
+	outer := new(outerS)
+	outer.b = 6
+	outer.c = 7.5
+	outer.int = 60
+	outer.in1 = 20
+	outer.innerS.in1 = 5
+	outer.in2 = 10
+	fmt.Println("outer1 :", *outer)
+	outer2 := outerS{6, 7.5, 20, 60, innerS{5, 10}}
+	fmt.Println("outer2 :", outer2)
+}
+
+type Wheel struct {
+	Size int
+}
+
+type Engine struct {
+	Power int
+	Type  string
+}
+
+type Car struct {
+	Wheel
+	Engine
+}
+
+type Car2 struct {
+	Wheel
+	Engine2 struct {
+		Power int
+		Type  string
+	}
+}
+
+func carFunc() {
+	{
+		c := Car{
+			Wheel{
+				Size: 18,
+			},
+			Engine{
+				Type:  "1.4T",
+				Power: 143,
+			},
+		}
+		fmt.Println("car info:", c)
+	}
+	{
+		c := Car{
+			Wheel: Wheel{
+				Size: 18,
+			},
+			Engine: Engine{
+				Type:  "1.4T",
+				Power: 143,
+			},
+		}
+		fmt.Println("car info:", c)
+	}
+	{
+		c := Car2{
+			Wheel: Wheel{
+				Size: 18,
+			},
+			Engine2: struct {
+				Power int
+				Type  string
+			}{
+				Type:  "1.4T",
+				Power: 143,
+			},
+		}
+		fmt.Println("car info:", c)
+	}
+	{
+		c := Car2{
+			Wheel{
+				Size: 18,
+			},
+			struct {
+				Power int
+				Type  string
+			}{
+				Type:  "1.4T",
+				Power: 143,
+			},
+		}
+		fmt.Println("car info:", c)
+	}
+}
+
+type Node struct {
+	Data int
+	Next *Node
+}
+
+func ShowNode(p *Node) {
+	for p != nil {
+		fmt.Println(*p)
+		p = p.Next
+	}
+}
+
 func StructBase() {
 	var point Point
 	fmt.Println("ins before:", point)
@@ -83,4 +200,8 @@ func StructBase() {
 		"hello",
 	}
 	printMsg(msg)
+
+	nestedStruct()
+
+	carFunc()
 }
