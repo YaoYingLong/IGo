@@ -1,6 +1,11 @@
 package main
 
-import "first/function"
+import (
+	"first/other"
+	"math/rand"
+	"os"
+	"time"
+)
 
 func main() {
 	// 基本语法
@@ -18,5 +23,7 @@ func main() {
 	// 接口
 	//function.InterBaseFunc()
 	// 结构体
-	function.StructBase()
+	//function.StructBase()
+	rand.Seed(time.Now().UTC().UnixNano())
+	other.Lissajous(os.Stdout)
 }
