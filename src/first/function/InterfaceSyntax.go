@@ -85,39 +85,56 @@ func InterBaseFunc() {
 		fmt.Println("form function:", v)
 	})
 	invoker.Call("hello2")
+	fmt.Println()
 
 	invoker = new(FuncCallerV2)
 	invoker.Call("hello3")
+	fmt.Println()
 
 	fileWriter := new(FileWriter)
 	fileWriter.WriterClose()
 	fileWriter.WriteData("FileWriter")
+	fmt.Println()
 
 	netWriter := new(NetWriter)
 	netWriter.WriterClose()
 	netWriter.WriteData("NetWriter")
 	netWriter.CanWriter()
+	fmt.Println()
 
 	f := new(NetWriter)
 	var writer DataWriter
 	writer = f
 	writer.WriteData("data")
 	writer.CanWriter()
+	fmt.Println()
 
 	var writer2 DataWriter = new(NetWriter)
 	writer2 = f
 	writer2.WriteData("data2")
 	writer2.CanWriter()
+	fmt.Println()
 
 	fmt.Println("GetStringer() == nil:", GetStringer() == nil)
 	fmt.Println("GetStringer() type", reflect.TypeOf(GetStringer()))
+	fmt.Println()
 
 	var ins *insImpl = nil
 	fmt.Println("ins == nil:", ins == nil)
 	fmt.Println("ins type", reflect.TypeOf(ins))
+	fmt.Println()
 
 	var writeCloser DataWriteCloser = new(NetWriter)
+	{
+		rw, ok := writeCloser.(Closer)
+		fmt.Println(ok, ";", rw.WriterClose())
+	}
+	{
+		rw, ok := writeCloser.(*NetWriter)
+		fmt.Println(ok, ";", rw.WriterClose(), rw.WriteData("*NetWriter"), rw.CanWriter())
+	}
 	writeCloser.WriterClose()
 	writeCloser.WriteData("writeCloser")
 	writeCloser.CanWriter()
+	fmt.Println()
 }
