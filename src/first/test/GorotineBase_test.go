@@ -1,6 +1,7 @@
 package test
 
 import (
+	"first/parallel"
 	"fmt"
 	"math/rand"
 	"runtime"
@@ -259,4 +260,53 @@ func TestChannel006(t *testing.T) {
 	ch <- 4
 	fmt.Println("after3 len:", len(ch))
 	fmt.Println("ch:", <-ch)
+}
+
+func TestSelect001(t *testing.T) {
+	ch := make(chan int)
+	quit := make(chan bool)
+	go func() {
+		for {
+			select {
+			case num := <-ch:
+				fmt.Println("num:", num)
+			case <-time.After(3 * time.Second):
+				fmt.Println("timeout")
+				quit <- true
+			}
+		}
+	}()
+
+	for i := 0; i < 5; i++ {
+		ch <- i
+		time.Sleep(time.Second)
+	}
+
+	<-quit
+	fmt.Println("game over")
+}
+
+func TestSelect002(t *testing.T) {
+	ch := make(chan int, 1)
+	for {
+		select {
+		case ch <- 0:
+		case ch <- 1:
+		}
+		i := <-ch
+		fmt.Println("Value received:", i)
+	}
+}
+
+func TestRpc001(t *testing.T) {
+	ch := make(chan string)
+
+	go parallel.RPCService(ch)
+
+	recv, err := parallel.RPCClient(ch, "hi")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("client received", recv)
+	}
 }
