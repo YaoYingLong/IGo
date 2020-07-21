@@ -2,6 +2,8 @@ package test
 
 import (
 	"first/function"
+	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -27,4 +29,18 @@ func TestLinkedListInsertEnd(t *testing.T) {
 		tail = &node
 	}
 	function.ShowNode(head)
+}
+
+func TestStructTag(t *testing.T) {
+	type Ins struct {
+		in1 int `key1:"value1" key2:"value2"`
+		in2 int `key1:"value1" key2:"value2"`
+	}
+	ins := Ins{in1: 1, in2: 2}
+	fmt.Println(ins)
+
+	typeOfIns := reflect.TypeOf(Ins{})
+	if catType, ok := typeOfIns.FieldByName("in2"); ok {
+		fmt.Println(catType.Tag.Get("key1"))
+	}
 }

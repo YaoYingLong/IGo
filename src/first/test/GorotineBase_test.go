@@ -4,6 +4,7 @@ import (
 	"first/parallel"
 	"fmt"
 	"math/rand"
+	"os"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -302,11 +303,113 @@ func TestRpc001(t *testing.T) {
 	ch := make(chan string)
 
 	go parallel.RPCService(ch)
-
 	recv, err := parallel.RPCClient(ch, "hi")
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println("client received", recv)
 	}
+}
+
+func TestTimeAfterFunc(t *testing.T) {
+	exit := make(chan int)
+
+	fmt.Println("start")
+
+	time.AfterFunc(2*time.Second, func() {
+		fmt.Println("one second after")
+
+		time.Sleep(2 * time.Second)
+		exit <- 0
+	})
+
+	<-exit
+}
+
+func TestTimerTicker(t *testing.T) {
+	ticker := time.NewTicker(time.Millisecond * 500)
+
+	stopper := time.NewTimer(time.Second * 2)
+
+	var i int
+
+	for {
+		select {
+		case <-stopper.C:
+			fmt.Println("stop")
+			goto StopHere
+		case <-ticker.C:
+			i++
+			fmt.Println("tick:", i)
+		}
+	}
+StopHere:
+	fmt.Println("done")
+}
+
+func TestCloseChan(t *testing.T) {
+	ch := make(chan int)
+
+	close(ch)
+
+	fmt.Printf("prt:%p cap:%d len:%d\n", ch, cap(ch), len(ch))
+
+	ch <- 1
+}
+
+func TestCloseChan2(t *testing.T) {
+	ch := make(chan int, 2)
+	ch <- 0
+	ch <- 1
+
+	close(ch)
+
+	for i := 0; i < cap(ch)+3; i++ {
+		v, ok := <-ch
+		fmt.Println(v, ok)
+	}
+}
+
+func TestTelnet(t *testing.T) {
+	exitChan := make(chan int)
+
+	go parallel.Server("127.0.0.1:7001", exitChan)
+
+	code := <-exitChan
+
+	os.Exit(code)
+}
+
+func pump1(ch chan int) {
+	for i := 0; ; i++ {
+		ch <- i * 2
+	}
+}
+
+func pump2(ch chan int) {
+	for i := 0; ; i++ {
+		ch <- i + 5
+	}
+}
+
+func suck(ch1, ch2 chan int) {
+	for {
+		select {
+		case v := <-ch1:
+			fmt.Printf("Received on channel 1: %d\n", v)
+		case v := <-ch2:
+			fmt.Printf("Received on channel 2: %d\n", v)
+		}
+	}
+}
+
+func TestSelect(t *testing.T) {
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+
+	go pump1(ch1)
+	go pump2(ch2)
+	go suck(ch1, ch2)
+
+	time.Sleep(1e9)
 }
