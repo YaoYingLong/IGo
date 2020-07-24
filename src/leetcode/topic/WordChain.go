@@ -4,6 +4,10 @@ import (
 	"math"
 )
 
+/**
+126. 单词接龙 II
+https://leetcode-cn.com/problems/word-ladder-ii/
+*/
 func FindLadders(beginWord string, endWord string, wordList []string) [][]string {
 	ids := map[string]int{}
 	for i, word := range wordList {
