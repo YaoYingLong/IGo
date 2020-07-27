@@ -28,3 +28,31 @@ func TestWordChain(t *testing.T) {
 	fmt.Println("sliceB:", sliceB)
 	fmt.Println("sliceA:", sliceA)
 }
+
+func TestIsSubsequence(k *testing.T) {
+	{
+		s := "abc"
+		t := "ahbgdc"
+		fmt.Println(topic.IsSubsequence(s, t))
+	}
+	{
+		s := "axc"
+		t := "ahbgdc"
+		fmt.Println(topic.IsSubsequence(s, t))
+	}
+	{
+		s := ""
+		t := "ahbgdc"
+		fmt.Println(topic.IsSubsequence(s, t))
+	}
+	{
+		s := "b"
+		t := "c"
+		fmt.Println(topic.IsSubsequence(s, t))
+	}
+}
+
+func TestReverseInt32(t *testing.T) {
+	fmt.Println("")
+	fmt.Println("")
+}
