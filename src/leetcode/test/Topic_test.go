@@ -56,3 +56,30 @@ func TestReverseInt32(t *testing.T) {
 	fmt.Println("")
 	fmt.Println("")
 }
+
+func TestAppendHead(t *testing.T) {
+	{
+		sub := []int{1, 2}
+		dst := []int{3, 4, 5}
+		dst = append(sub, dst...)
+		fmt.Println(dst)
+	}
+	{
+		sub := []int{1, 2}
+		dst := []int{3, 4, 5}
+		dst = append(dst[:1], append(sub, dst[1:]...)...)
+		fmt.Println(dst)
+	}
+	{
+		sub := []int{1, 2}
+		dst := [][]int{{3, 4}, {5, 6}}
+		dst = append([][]int{sub}, dst...)
+		fmt.Println(dst)
+	}
+	{
+		sub := []int{1, 2}
+		dst := [][]int{{3, 4}, {5, 6}}
+		dst = append(dst[:1], append([][]int{sub}, dst[1:]...)...)
+		fmt.Println(dst)
+	}
+}
