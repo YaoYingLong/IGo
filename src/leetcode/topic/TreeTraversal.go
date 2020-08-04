@@ -74,60 +74,6 @@ func abs(left, right int) int {
 	return right - left
 }
 
-func levelOrder(root *TreeNode) [][]int {
-	var result [][]int
-	if root == nil {
-		return result
-	}
-	var queue []*TreeNode
-	queue = append(queue, root)
-	for len(queue) > 0 {
-		levelLen := len(queue)
-		var levelResult []int
-		for levelLen > 0 {
-			treeNode := queue[0]
-			queue = queue[1:]
-			if treeNode.Left != nil {
-				queue = append(queue, treeNode.Left)
-			}
-			if treeNode.Right != nil {
-				queue = append(queue, treeNode.Right)
-			}
-			levelResult = append(levelResult, treeNode.Val)
-			levelLen--
-		}
-		result = append(result, levelResult)
-	}
-	return result
-}
-
-func levelOrderBottom(root *TreeNode) [][]int {
-	var result [][]int
-	if root == nil {
-		return result
-	}
-	var queue []*TreeNode
-	queue = append(queue, root)
-	for len(queue) > 0 {
-		levelLen := len(queue)
-		var levelResult []int
-		for levelLen > 0 {
-			treeNode := queue[0]
-			queue = queue[1:]
-			if treeNode.Left != nil {
-				queue = append(queue, treeNode.Left)
-			}
-			if treeNode.Right != nil {
-				queue = append(queue, treeNode.Right)
-			}
-			levelResult = append(levelResult, treeNode.Val)
-			levelLen--
-		}
-		result = append([][]int{levelResult}, result...)
-	}
-	return result
-}
-
 type Node struct {
 	Val      int
 	Children []*Node
