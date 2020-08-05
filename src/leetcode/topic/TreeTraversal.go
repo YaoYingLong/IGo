@@ -92,19 +92,6 @@ func preorder(root *Node) []int {
 	return result
 }
 
-func postorder(root *Node) []int {
-	var result []int
-	if root == nil {
-		return []int{}
-	}
-	childrens := root.Children
-	for _, node := range childrens {
-		result = append(result, postorder(node)...)
-	}
-	result = append(result, root.Val)
-	return result
-}
-
 func isUnivalTree(root *TreeNode) bool {
 	isUnival := true
 	if root == nil {
@@ -177,22 +164,27 @@ func isSymmetric(root *TreeNode) bool {
 }
 
 /*
-剑指 Offer 26
-树的子结构
+1145
+二叉树着色游戏
 */
-func isSubStructure(A *TreeNode, B *TreeNode) bool {
-	if B == nil || A == nil {
-		return false
-	}
-	return isSubTrue(A, B) || isSubStructure(A.Left, B) || isSubStructure(A.Right, B)
+var leftNum int
+var rightNum int
+
+func btreeGameWinningMove(root *TreeNode, n int, x int) bool {
+	getLeftAndRightCount(root, x)
+	half := n / 2
+	return leftNum > half || rightNum > half || (leftNum+rightNum) < half
 }
 
-func isSubTrue(A *TreeNode, B *TreeNode) bool {
-	if B == nil {
-		return true
+func getLeftAndRightCount(root *TreeNode, x int) int {
+	if root == nil {
+		return 0
 	}
-	if A == nil || A.Val != B.Val {
-		return false
+	left := getLeftAndRightCount(root.Left, x)
+	right := getLeftAndRightCount(root.Right, x)
+	if root.Val == x {
+		leftNum = left
+		rightNum = right
 	}
-	return isSubTrue(A.Left, B.Left) && isSubTrue(A.Right, B.Right)
+	return left + right + 1
 }

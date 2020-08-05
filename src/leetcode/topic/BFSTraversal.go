@@ -1,7 +1,5 @@
 package topic
 
-import "fmt"
-
 func levelOrder(root *TreeNode) [][]int {
 	var result [][]int
 	if root == nil {
@@ -168,18 +166,12 @@ func addOneRow(root *TreeNode, v int, d int) *TreeNode {
 863
 二叉树中所有距离为 K 的结点
 */
-var containSet map[*TreeNode]int
-
-func distanceK(root *TreeNode, target *TreeNode, K int) []int {
-	containSet = make(map[*TreeNode]int)
+func DistanceK(root *TreeNode, target *TreeNode, K int) []int {
 	parentMap := make(map[*TreeNode]*TreeNode)
 	parent(root, nil, parentMap)
 
-	containSet[target] = 1
-
-	if containSet[target] != 1 {
-		fmt.Println(1111)
-	}
+	containSet := make(map[*TreeNode]bool)
+	containSet[target] = true
 
 	var queue []*TreeNode
 	queue = append(queue, target)
@@ -188,29 +180,37 @@ func distanceK(root *TreeNode, target *TreeNode, K int) []int {
 	for len(queue) > 0 {
 		levelLen := len(queue)
 		for levelLen > 0 {
+			levelLen--
 			node := queue[0]
 			queue = queue[1:]
 			if levelNum == K {
 				result = append(result, node.Val)
+				continue
 			}
-			if node.Left != nil && containSet[node.Left] != 1 {
-				containSet[node.Left] = 1
-				queue = append(queue, node.Left)
+			if node.Left != nil {
+				if _, isExist := containSet[node.Left]; !isExist {
+					containSet[node.Left] = true
+					queue = append(queue, node.Left)
+				}
 			}
-			if node.Right != nil && containSet[node.Right] != 1 {
-				containSet[node.Right] = 1
-				queue = append(queue, node.Right)
+			if node.Right != nil {
+				if _, isExist := containSet[node.Right]; !isExist {
+					containSet[node.Right] = true
+					queue = append(queue, node.Right)
+				}
 			}
 			parent := parentMap[node]
-			if containSet[parent] != 1 {
-				containSet[parent] = 1
-				queue = append(queue, parent)
+			if parent != nil {
+				if _, isExist := containSet[parent]; !isExist {
+					containSet[parent] = true
+					queue = append(queue, parent)
+				}
 			}
-			levelLen--
 		}
 		if levelNum == K {
 			return result
 		}
+		levelNum++
 	}
 	return result
 }
@@ -218,7 +218,6 @@ func distanceK(root *TreeNode, target *TreeNode, K int) []int {
 func parent(node, parentNode *TreeNode, parentMap map[*TreeNode]*TreeNode) {
 	if node != nil {
 		parentMap[node] = parentNode
-		containSet[node] = 0
 		parent(node.Left, node, parentMap)
 		parent(node.Right, node, parentMap)
 	}
@@ -251,6 +250,72 @@ func levelOrder102(root *TreeNode) [][]int {
 			levelLen--
 		}
 		result = append(result, levelResult)
+	}
+	return result
+}
+
+/*
+199
+二叉树的右视图
+*/
+func rightSideView(root *TreeNode) []int {
+	var result []int
+	if root == nil {
+		return result
+	}
+	var queue []*TreeNode
+	queue = append(queue, root)
+	for len(queue) > 0 {
+		levelLen := len(queue)
+		for levelLen > 0 {
+			levelLen--
+			node := queue[0]
+			queue = queue[1:]
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			if levelLen == 0 {
+				result = append(result, node.Val)
+			}
+		}
+	}
+	return result
+}
+
+/*
+103
+二叉树的锯齿形层次遍历
+*/
+func zigzagLevelOrder(root *TreeNode) [][]int {
+	var result [][]int
+	if root == nil {
+		return result
+	}
+	var queue []*TreeNode
+	queue = append(queue, root)
+	for len(queue) > 0 {
+		levelLen := len(queue)
+		var subResult []int
+		for levelLen > 0 {
+			levelLen--
+			node := queue[0]
+			queue = queue[1:]
+			if len(result)%2 == 0 {
+				subResult = append(subResult, node.Val)
+			} else {
+				subResult = append([]int{node.Val}, subResult...)
+			}
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		result = append(result, subResult)
 	}
 	return result
 }
