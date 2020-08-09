@@ -188,3 +188,62 @@ func getLeftAndRightCount(root *TreeNode, x int) int {
 	}
 	return left + right + 1
 }
+
+/*
+105
+从前序与中序遍历序列构造二叉树
+*/
+func buildTree(preorder []int, inorder []int) *TreeNode {
+	if preorder == nil || inorder == nil || len(preorder) == 0 || len(preorder) != len(inorder) {
+		return nil
+	}
+	indexMap := make(map[int]int, len(inorder))
+	for index, val := range inorder {
+		indexMap[val] = index
+	}
+	return buildTreeTrav(preorder, 0, len(preorder)-1, 0, indexMap)
+}
+
+func buildTreeTrav(preorder []int, preLeft, preRight, inLeft int, indexMap map[int]int) *TreeNode {
+	if preLeft > preRight {
+		return nil
+	}
+
+	root := &TreeNode{Val: preorder[preLeft]}
+	if preLeft == preRight {
+		return root
+	}
+	rootIndex := indexMap[root.Val]
+	leftNodes := rootIndex - inLeft
+	root.Left = buildTreeTrav(preorder, preLeft+1, preLeft+leftNodes, inLeft, indexMap)
+	root.Right = buildTreeTrav(preorder, preLeft+leftNodes+1, preRight, rootIndex+1, indexMap)
+	return root
+}
+
+func buildTreeV2(preorder []int, inorder []int) *TreeNode {
+	if preorder == nil || inorder == nil || len(preorder) == 0 || len(preorder) != len(inorder) {
+		return nil
+	}
+
+	root := &TreeNode{Val: preorder[0]}
+	var queue []*TreeNode
+	queue = append(queue, root)
+	inorderIndex := 0
+	for i := 1; i < len(preorder); i++ {
+		preVal := preorder[i]
+		node := queue[len(queue)-1]
+		if node.Val != inorder[inorderIndex] {
+			node.Left = &TreeNode{Val: preVal}
+			queue = append(queue, node.Left)
+		} else {
+			for len(queue) > 0 && queue[len(queue)-1].Val == inorder[inorderIndex] {
+				node = queue[len(queue)-1]
+				queue = queue[0 : len(queue)-1]
+				inorderIndex++
+			}
+			node.Right = &TreeNode{Val: preVal}
+			queue = append(queue, node.Right)
+		}
+	}
+	return root
+}
