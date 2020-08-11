@@ -247,3 +247,29 @@ func buildTreeV2(preorder []int, inorder []int) *TreeNode {
 	}
 	return root
 }
+
+/*
+114
+二叉树展开为链表
+*/
+var cou *TreeNode
+
+func flatten(root *TreeNode) {
+	ans := &TreeNode{Val: 0}
+	cou = ans
+	flattenDfs(root)
+	root = ans.Right
+}
+
+func flattenDfs(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	leftNode := root.Left
+	rightNode := root.Right
+	root.Left = nil
+	cou.Right = root
+	cou = root
+	flattenDfs(leftNode)
+	flattenDfs(rightNode)
+}
