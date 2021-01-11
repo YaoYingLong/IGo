@@ -2,6 +2,7 @@ package main
 
 import (
 	"first/other"
+	"first/syntax"
 	"math/rand"
 	"os"
 	"time"
@@ -9,7 +10,7 @@ import (
 
 func main() {
 	// 基本语法
-	//syntax.BaseFunc()
+	syntax.BaseFunc()
 	// 并行编程
 	//parallel.ModelExec()
 	// web服务
